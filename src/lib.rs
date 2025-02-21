@@ -164,6 +164,10 @@ pub struct Monado {
 	api: Container<MonadoApi>,
 	root: MndRootPtr,
 }
+
+unsafe impl Send for Monado {}
+unsafe impl Send for MonadoApi {}
+
 impl Monado {
 	pub fn auto_connect() -> Result<Self, String> {
 		if let Ok(libmonado_path) = env::var("LIBMONADO_PATH") {
