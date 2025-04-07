@@ -208,8 +208,10 @@ impl Monado {
 		Self::create(path).map_err(|e| format!("{e:?}"))
 	}
 	pub fn create<S: AsRef<OsStr>>(libmonado_so: S) -> Result<Self, MndResult> {
-		let api = unsafe { Container::<MonadoApi>::load(libmonado_so) }
-			.map_err(|_| MndResult::ErrorConnectingFailed)?;
+		let api = unsafe { Container::<MonadoApi>::load(libmonado_so) }.map_err(|e| {
+			eprintln!("Libmonado load failed: {:?}", e);
+			MndResult::ErrorConnectingFailed
+		})?;
 		if !crate_api_version().matches(&get_api_version(&api)) {
 			return Err(MndResult::ErrorInvalidVersion);
 		}
